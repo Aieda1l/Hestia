@@ -13,10 +13,14 @@ extension EnvironmentValues {
 
 @main
 struct HestiaApp: App {
-    private let preferencesSetup: Result<CompanionPreferencesStore, Error>
+    @State private var preferencesSetup: Result<CompanionPreferencesStore, Error>
 
     init() {
-        preferencesSetup = Result {
+        _preferencesSetup = State(initialValue: Self.openCompanionStore())
+    }
+
+    private static func openCompanionStore() -> Result<CompanionPreferencesStore, Error> {
+        Result {
             let store = try CompanionPreferencesStore.appGroup()
             // Surface corrupt existing data instead of silently resetting it.
             _ = try store.load()
@@ -39,9 +43,12 @@ struct HestiaApp: App {
                     Text("Companion storage unavailable")
                         .font(.headline)
                     Text((error as? CompanionPreferencesStoreError) == .corruptData
-                         ? "Saved companion settings could not be read. Nothing was reset."
-                         : "Shared companion storage could not be opened. Nothing was reset.")
+                         ? "Saved companion settings could not be read. Nothing was reset. Your data is preserved."
+                         : "Shared companion storage could not be opened. Nothing was reset. You can retry.")
                         .multilineTextAlignment(.center)
+                    Button("Retry opening companion") {
+                        preferencesSetup = Self.openCompanionStore()
+                    }
                 }
                 .padding()
             }
