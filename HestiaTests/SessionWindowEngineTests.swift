@@ -84,6 +84,21 @@ final class SessionWindowEngineTests: XCTestCase {
         ))
     }
 
+    func testElapsedCannotBeReactivatedByClockMovingBackward() throws {
+        var window = try engine.begin(task: .reading, duration: 600, at: now)
+        window.phase = .elapsed
+        XCTAssertEqual(
+            engine.reconcile(window, at: now.addingTimeInterval(30), activity: .active),
+            .elapsed
+        )
+        XCTAssertTrue(engine.canRestart(after: window, at: now.addingTimeInterval(30)))
+        XCTAssertFalse(engine.canStartNewWindow(
+            after: window,
+            at: now.addingTimeInterval(30),
+            observedActivity: .active
+        ))
+    }
+
     func testStaleDismissedAndPendingAreNotLogicalCompletion() throws {
         var window = try engine.begin(task: .creating, duration: 3_600, at: now)
         window.phase = .running

@@ -52,6 +52,11 @@ struct SessionWindowEngine {
         if window.phase == .finished {
             return .finished
         }
+        // Never reactivate an elapsed task if the system clock is adjusted
+        // backward; once the task finished locally, its phase is monotonic.
+        if window.phase == .elapsed {
+            return .elapsed
+        }
         // The task deadline is authoritative for local elapsed status, even
         // while ActivityKit remains active or only reports stale/dismissed.
         if date >= window.deadline {
@@ -70,7 +75,7 @@ struct SessionWindowEngine {
     // activity. Use canStartNewWindow after reconciling system presentations.
     func canRestart(after window: CompanionWindow, at date: Date) -> Bool {
         window.phase != .endPending &&
-            (window.phase == .finished || date >= window.deadline)
+            (window.phase == .finished || window.phase == .elapsed || date >= window.deadline)
     }
 
     // The required guard for an owner/coordinator before any NEW ActivityKit
