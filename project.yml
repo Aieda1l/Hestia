@@ -1,0 +1,95 @@
+name: Hestia
+options:
+  deploymentTarget:
+    iOS: "17.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    TARGETED_DEVICE_FAMILY: "1"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+
+targets:
+  Hestia:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - Shared
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Hestia
+        NSSupportsLiveActivities: true
+        CFBundleURLTypes:
+          - CFBundleURLSchemes:
+              - hestia
+    entitlements:
+      path: App/Hestia.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.example.Hestia
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.Hestia
+    dependencies:
+      - target: HestiaWidgets
+        embed: true
+
+  HestiaWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Widget
+      - Shared
+    info:
+      path: Widget/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widget/HestiaWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.example.Hestia
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.Hestia.widgets
+        APPLICATION_EXTENSION_API_ONLY: YES
+
+  HestiaTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - HestiaTests
+    dependencies:
+      - target: Hestia
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.Hestia.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Hestia.app/Hestia"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+
+  HestiaUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - HestiaUITests
+    dependencies:
+      - target: Hestia
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.Hestia.uitests
+        TEST_TARGET_NAME: Hestia
+
+schemes:
+  Hestia:
+    build:
+      targets:
+        Hestia: all
+        HestiaWidgets: all
+    test:
+      targets:
+        - HestiaTests
+        - HestiaUITests

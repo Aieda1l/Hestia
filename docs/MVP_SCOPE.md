@@ -1,0 +1,15 @@
+# Hestia — proposed Island-first MVP scope
+
+Updated October 15, 2026. **WRITTEN MVP SCOPE APPROVED; implementation plan approval, app code and verification still outstanding.** Canonical acceptance criteria and ordering: [design spec](superpowers/specs/2026-10-15-island-first-companion-design.md).
+
+## Primary journey
+
+Choose original companion → see animated in-app preview → turn **Companion Mode ON until manually stopped** (persisted state, not a background daemon) → start a real multi-hour reading/study/creative Live Activity window (candidate 6 hours; never more than Apple's eight-hour maximum) → when authorized/hardware allows, see character pose, task and countdown in Dynamic Island and Lock Screen Live Activity → end the task window or start another one later without switching Companion Mode OFF → user may Stop Companion Mode independently. The OS controls actual Island visibility; uninterrupted all-day Island display is **not** in scope. Compact/minimal/expanded Island and Lock Screen layouts are required; iPhone without Island remains useful.
+
+**In eventual v1:** original starter adoption/naming; separate persistent Companion Mode ON/OFF; one real bounded task window at a time; **one-tap Restart Island session inside Hestia** after expiry, reusing the user's saved genuine task and duration when they resume it, with clear authorization and failure handling; selected-companion persistence; ActivityKit permission/absence/denial and eight-hour termination states; native date-driven task countdown; end/relaunch/expiry reconciliation; brief state-driven character expressions; accessible static fallback; safe local PNG/JPEG/GIF import with in-app animation; App Group sharing of static representative artwork; and a secondary Home Screen widget with honest refresh copy.
+
+**Explicitly excluded:** indefinite/continuous Island presence even if Companion Mode is ON; continuously looping GIF or arbitrary video in Island/widget; guaranteed system visibility; high-frequency background/timeline animation tricks or synthetic decorative renewal; cloud/accounts; remote Live Activity pushes; third-party IP distribution; public social content; expensive character/sprite editors and subscriptions.
+
+**Conditional research, outside committed v1 behavior:** Minimal idle-motion technique after a separate approved platform spike/device/App Review validation; optional expiry reminder (opt-in notification) or Control Center/Shortcuts LiveActivityIntent for a user-initiated new genuine session **outside the app**. The accepted one-tap in-app renewal does not depend on these additions. No automatic endless renewal or zero-gap Island guarantee.
+
+**Acceptance gate:** On real compatible and non-Island iPhones verify authorized and disabled ActivityKit, all layouts, session start/end/dismiss/stale/relaunch, timers, companion selection and artwork import/performance. VoiceOver, Dynamic Type, reduced-motion/tinted/Always-On states, local/offline behavior and source rights must pass. Full measurable cases are in the canonical spec. No current app or hardware verification exists.

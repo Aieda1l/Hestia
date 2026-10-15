@@ -1,0 +1,7 @@
+# Preserve Unix line endings for macOS runner scripts and configuration.
+* text=auto
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.swift text eol=lf
+*.entitlements text eol=lf

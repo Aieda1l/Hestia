@@ -1,0 +1,31 @@
+# XcodeGen output and Apple build artifacts
+Hestia.xcodeproj/
+App/Info.plist
+Widget/Info.plist
+*.xcworkspace/
+DerivedData/
+.build/
+.swiftpm/
+*.xcresult/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+
+# Test logs and release packages
+hestia-build.log
+hestia-test.log
+*.ipa
+*.app/
+
+# Never commit local signing material or developer secrets
+*.p12
+*.mobileprovision
+*.cer
+*.keychain-db
+.env
+.env.*
+
+# Machine-specific assistant state, unrelated to native app sources
+.agents/
+.superpowers/
+SKILLS_MANIFEST.md

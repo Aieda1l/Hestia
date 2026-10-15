@@ -1,0 +1,75 @@
+name: Hestia iOS Simulator
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# No Apple signing secrets: compile and test with a hosted simulator.
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-simulator-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build and smoke-test (macOS)
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out Hestia
+        uses: actions/checkout@v4
+
+      - name: Inspect Apple toolchain
+        run: |
+          sw_vers
+          xcode-select -p
+          xcodebuild -version
+          xcrun simctl list devices available
+
+      - name: Install XcodeGen if needed
+        run: |
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            brew install xcodegen
+          fi
+          xcodegen --version
+
+      - name: Generate project
+        run: |
+          xcodegen generate
+          xcodebuild -list -project Hestia.xcodeproj
+
+      - name: Build app and extension (unsigned simulator)
+        shell: bash
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project Hestia.xcodeproj \
+            -scheme Hestia \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | tee hestia-build.log
+
+      - name: Run XCTest and launch smoke tests (unsigned simulator)
+        shell: bash
+        run: |
+          set -o pipefail
+          bash scripts/test-ios.sh \
+            -resultBundlePath "$PWD/HestiaTests.xcresult" \
+            test 2>&1 | tee hestia-test.log
+
+      - name: Save logs and XCTest results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hestia-ios-ci-${{ github.run_number }}
+          if-no-files-found: ignore
+          retention-days: 7
+          path: |
+            hestia-build.log
+            hestia-test.log
+            HestiaTests.xcresult
