@@ -21,6 +21,9 @@ hestia-test.log
 *.p12
 *.mobileprovision
 *.cer
+*.pem
+*.p8
+AuthKey_*
 *.keychain-db
 .env
 .env.*

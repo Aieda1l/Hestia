@@ -1,11 +1,11 @@
 # Hestia — planned verification gates
 
-Updated 2026-10-15. **None of these native tests has run in the current Windows environment.** References: [approved spec](superpowers/specs/2026-10-15-island-first-companion-design.md), [observed gap analysis](GAP_ANALYSIS.md).
+Updated 2026-10-15. **Initial native app and extension compilation + unit/UI smoke tests PASSED on a GitHub-hosted Mac (run 38815590398), not locally on Windows.** Full feature tests, signed device validation and App Review checks remain unrun. References: [approved spec](superpowers/specs/2026-10-15-island-first-companion-design.md), [observed gap analysis](GAP_ANALYSIS.md).
 
 ## Evidence ladder
 
-1. **Source baseline:** original SwiftUI starter was absent. **Approved minimal Task 1 scaffold has now been created** with `project.yml`, `App/`, `Widget/`, `Shared/`, `HestiaTests/`, `HestiaUITests/`, `scripts/` and `README.md`. The folder is not a Git repository.
-2. **Mac project generation/compilation, after plan approval:** `xcodegen generate`; `xcodebuild -list -project Hestia.xcodeproj`; `xcodebuild -project Hestia.xcodeproj -scheme Hestia -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build`. These commands are **not previously executed** here because Windows has no Apple toolchain.
+1. **Source baseline:** original SwiftUI starter was absent. Approved minimal Task 1 scaffold now has `project.yml`, `App/`, `Widget/`, `Shared/`, `HestiaTests/`, `HestiaUITests/`, `scripts/` and `README.md`. A private Git repository was initialized and pushed to `Aieda1l/Hestia`.
+2. **Mac project generation/compilation:** `xcodegen generate`; `xcodebuild -list -project Hestia.xcodeproj`; `xcodebuild -project Hestia.xcodeproj -scheme Hestia -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build`. These commands were executed **successfully on GitHub-hosted macOS**, not directly on Windows.
 3. **Simulator XCTest:** list available simulator IDs using `xcrun simctl list -j devices available` and use a discovered destination for targeted tests plus UI smoke. Do not invent IDs or passing logs.
 4. **Signed iPhones:** supply owned bundle IDs and matching App Group entitlements in the app and widget extension. Validate on at least one Dynamic Island iPhone and one iPhone without Island on a current supported iOS.
 5. **Release:** separately review App Review rules, license evidence, privacy disclosure, access needs, signing, accessibility and energy usage.
@@ -27,6 +27,7 @@ Updated 2026-10-15. **None of these native tests has run in the current Windows 
 ## Hard stops
 
 - **Task 1 status on 2026-10-15:** static Python/PyYAML `project.yml` parse/schema assertions, parsed matching plist entitlements, and Git Bash shell syntax passed; actual `bash scripts/test-ios.sh -only-testing:HestiaTests/ProjectSmokeTests test` returned **BLOCKED (exit 2, missing xcrun)**. This is **not** a Swift compile, XCTests, or RED/GREEN evidence.
+- **Updated Task 1 native status:** GitHub Actions run `38815590398` ran XcodeGen, unsigned Xcode build and XCTest smoke tests successfully on macOS. This is real native GREEN evidence for the *completed scaffold*; a deliberate preceding RED failure was not observed. All Companion Mode/Live Activity feature tests remain future work.
 
 - Without a Mac/Xcode, mark native build/tests **blocked**, never passing.
 - Without a signed Dynamic Island iPhone, do not claim Island animation/visibility, live asset sharing or App Store readiness.
