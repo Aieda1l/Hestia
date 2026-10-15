@@ -307,4 +307,41 @@ final class SessionWindowStoreTests: XCTestCase {
             XCTAssertEqual(try store.load(), current)
         }
     }
+
+    func testEndPendingCannotRegressToRunning() throws {
+        try withIsolatedDefaults { defaults in
+            let store = SessionWindowStore(defaults: defaults)
+            var current = try window()
+            current.activityID = "observed-id"
+            current.phase = .endPending
+            try store.save(current)
+            for earlier in [WindowPhase.starting, .running, .elapsed] {
+                var staleWrite = current
+                staleWrite.phase = earlier
+                XCTAssertThrowsError(try store.save(staleWrite)) {
+                    XCTAssertEqual($0 as? SessionWindowStoreError, .invalidWindow)
+                }
+                XCTAssertEqual(try store.load(), current)
+            }
+            var finished = current
+            finished.phase = .finished
+            try store.save(finished)
+            XCTAssertEqual(try store.load(), finished)
+        }
+    }
+
+    func testElapsedSessionCannotRegressToRunning() throws {
+        try withIsolatedDefaults { defaults in
+            let store = SessionWindowStore(defaults: defaults)
+            var elapsed = try window()
+            elapsed.phase = .elapsed
+            try store.save(elapsed)
+            var stale = elapsed
+            stale.phase = .running
+            XCTAssertThrowsError(try store.save(stale)) {
+                XCTAssertEqual($0 as? SessionWindowStoreError, .invalidWindow)
+            }
+            XCTAssertEqual(try store.load(), elapsed)
+        }
+    }
 }

@@ -72,6 +72,12 @@ final class SessionWindowStore {
                 if previous.phase == .finished && window.phase != .finished {
                     throw SessionWindowStoreError.invalidWindow
                 }
+                // Writes from a delayed caller may not roll a session back
+                // from ending/elapsed to running. The Task 4 coordinator is
+                // the only owner allowed to confirm transition to finished.
+                guard Self.isForwardPhaseTransition(from: previous.phase, to: window.phase) else {
+                    throw SessionWindowStoreError.invalidWindow
+                }
             }
         }
         let data = try JSONEncoder().encode(window)
@@ -96,5 +102,22 @@ final class SessionWindowStore {
             duration > 0 &&
             duration <= SessionWindowEngine.maximumDuration &&
             CompanionWindow.isSafePosterKey(window.posterKey)
+    }
+
+    private static func isForwardPhaseTransition(
+        from previous: WindowPhase, to next: WindowPhase
+    ) -> Bool {
+        switch previous {
+        case .starting:
+            return true
+        case .running:
+            return next != .starting
+        case .elapsed:
+            return next == .elapsed || next == .endPending || next == .finished
+        case .endPending:
+            return next == .endPending || next == .finished
+        case .finished:
+            return next == .finished
+        }
     }
 }
