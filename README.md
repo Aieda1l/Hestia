@@ -8,13 +8,15 @@ Companion Mode, Dynamic Island character, artwork importer, or complete widget.
 The app currently presents an original SwiftUI vector mascot, Mochi. Its
 embedded WidgetKit extension supplies a temporary static bootstrap widget.
 An XCTest smoke test checks that the app and the starter mascot share the
-expected identifier. It has **not been run**.
+expected identifier. The first cloud macOS simulator run **passed** both
+the unit smoke test and app-launch UI smoke test on October 15, 2026.
 
 ## macOS prerequisites and verification
 
 Use a Mac with Xcode, an installed iOS 17-or-newer iPhone Simulator and
-XcodeGen. These are proposed commands and **have not been run** on this
-Windows-based workspace:
+XcodeGen. These commands **cannot be run directly on this Windows PC**;
+equivalent XcodeGen, build and XCTest steps were **successfully run** on
+GitHub-hosted macOS in the first workflow:
 
     xcodegen generate
     xcodebuild -list -project Hestia.xcodeproj
@@ -33,8 +35,17 @@ After pushing to the private repository, use GitHub **Actions** >
 **Hestia iOS Simulator** > **Run workflow**; pushes to the `main`
 branch also trigger the checks. Hosted macOS execution consumes Actions
 minutes for a private repository. These checks need no Apple signing
-credentials or provisioning profiles. Until a real hosted run completes,
-the native build and tests are **not verified**.
+credentials or provisioning profiles. **Initial cloud-native build and
+both smoke-test suites passed**; this does not validate future
+Companion Mode, ActivityKit or physical iPhone behavior.
+
+**Private repository:** https://github.com/Aieda1l/Hestia
+
+The first GitHub-hosted macOS run **38815590398**, October 15, 2026,
+completed **successfully**: project generation, unsigned iOS simulator
+app/extension build, unit smoke, UI launch smoke and result upload.
+Logs: https://github.com/Aieda1l/Hestia/actions/runs/38815590398
+No signed iPhone installation package is provided at this stage.
 
 The user's **iPhone 16 Pro** supports Dynamic Island. Installing a beta
 there requires an Apple-signed device build (or TestFlight once the app
@@ -50,9 +61,10 @@ UI test targets; the UI suite currently has only an app-launch smoke test.
 Tests for the companion journey belong to a later approved task.
 
 For TDD, the plan calls for demonstrating a RED smoke test before adding
-StarterCompanion and then GREEN afterward. Both stages are **BLOCKED in
-this environment**, so this delivered scaffold includes the full starter
-definition without claiming either test result.
+StarterCompanion and then GREEN afterward. The initial RED failure
+was **not observed** because source was first drafted on Windows,
+but the completed scaffold's real cloud-hosted GREEN XCTest **passed**.
+Future changes should use cloud CI to observe RED/GREEN when practical.
 
 ## Project structure and signing
 

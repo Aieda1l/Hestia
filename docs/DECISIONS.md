@@ -45,3 +45,11 @@
 **Approved work:** [Core Island companion implementation plan](superpowers/plans/2026-10-15-island-companion-core.md) followed by the dependent [Artwork/GIF and snapshot widget plan](superpowers/plans/2026-10-15-companion-art-and-widget.md). Implementer may create a **minimal scaffold in the chosen Hestia folder** after a source recheck; the plan requires a Mac/Xcode native compile/simulator gate before continuing to substantial uncompiled Swift feature implementation.
 
 **Environment ruling:** Hestia is not a Git repo and the Windows host has no xcodebuild/xcodegen/Swift. Do not initialize Git, fake compilation, assume App Store eligibility, or overwrite recovered starter. Keep Task 1 scaffold review as file-level evidence and stop at the documented native gate.
+
+## 2026-10-15 — Windows development with private GitHub macOS CI
+
+**Status:** Execution continuation authorized by user: "I have an iPhone 16 Pro. Please proceed." Context was the proposed Windows → private GitHub repository → GitHub-hosted macOS Xcode generation/build/test → eventual signed device installation path.
+
+**Decision:** Initialize local Git in the selected Hestia workspace, create and push to the private `Aieda1l/Hestia` repository using existing authenticated GitHub CLI, and run unsigned iOS simulator smoke CI on `macos-15` with no Apple signing credentials. This replaces the previously blocked Windows-only compiler gate with a real external native build runner; physical iPhone testing remains a separate signing/provisioning step. No user-selected artwork or signing secrets are committed.
+
+**Observed first run:** `38815590398` generated the Xcode project and built app plus extension successfully; XCTest result was pending at the time of this entry. No App Store/TestFlight app exists yet. The prior prohibition on creating a Git repository was a **pre-approval state**, superseded by the user's explicit request to proceed with the GitHub cloud-build workflow.
